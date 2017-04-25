@@ -8,3 +8,4 @@ applications:
   disk_quota: 1024M
   services:
   - Speech To Text-pf
+  - 1f-demo-twitter-cloudantNoSQLDB
