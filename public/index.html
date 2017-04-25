@@ -1,26 +1,161 @@
-<!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        
+        <!-- Bootstrap library -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <link rel="stylesheet" href="stylesheets/style.css">
+        <link rel="stylesheet" href="stylesheets/css.css">
+        <link rel="stylesheet" href="stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
+        
+        <link rel="icon" href="images/favicon.png">
+        
+        <!-- AngularJS library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        
+        <script src="lib/ng-file-upload.min.js"></script>
+        <script src="lib/angular-audio-recorder.min.js"></script>
+        <script src="lib/recorder.js"></script>
+        <script src="lib/moment.min.js"></script>
+        <script src="lib/scrollglue.js"></script>
+        <script>
+            angular.module('myApp', ['ngFileUpload', 'luegg.directives']);
+        </script>
+        <script src="js/customer.controller.js"></script>
+        <script src="js/utils.js"></script>
+        
+        <title>FCA - Troubleshooting</title>
+    </head>
+  
+    <body style="padding: 0px;">
+        <div data-ng-app="myApp" data-ng-controller="customerController">
+            <div class="panel panel-primary" style="margin-bottom: 0px;">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> <strong>Troubleshooting - FCA</strong>
+                </div>
+                <div id="panel-chat" class="panel-body" data-scroll-glue style="">
+                    <!-- Tablet, Laptop, Desktop -->
+                    <ul class="chat visible-sm visible-md visible-lg">
+                        <li data-ng-class="{'left clearfix': !message.isUser, 'right clearfix': message.isUser}" data-ng-repeat="message in messages">
+                            <span data-ng-class="{'chat-img pull-left': !message.isUser, 'chat-img pull-right': message.isUser}">
+                                <img data-ng-if="message.isUser" src="/images/generic-user-icon.png" class="img-circle namiContainer" />
+                                <img data-ng-if="!message.isUser" src="/images/logo.png" class="img-circle namiContainer" />
+                            </span>
+                            <div class="chat-body clearfix">
+                                <div class="header" data-ng-class="{'header_bottom': message.isUser}">
+                                    <strong data-ng-class="{'pull-right': message.isUser}" class="message_header">{{message.author}}</strong>
+                                    <small data-ng-class="{'pull-right': !message.isUser}" class="text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>{{message.hourAnswerFilter}}
+                                    </small>
+                                </div>
+                                <p data-ng-if="!message.isURL" class="message_content" data-ng-class="{'pull-right': message.isUser}">{{message.message}}</p>
+                                
+                                <div data-ng-if="$parent.$last" data-ng-repeat="topic in message.topics" data-ng-class="{'pull-right': message.isUser}" style="margin-left: 20px;">
+                                	<p class="topic_content" data-ng-click="sendTopicMessage(topic)"><i class="fa fa-comment"></i> {{topic}}</p>
+                                </div>
+                                
+                                <div data-ng-repeat="step in message.stepsToSolve" data-ng-class="{'pull-right': message.isUser}" style="margin-left: 20px;">
+                                	<p data-ng-if="step.type == 'string'" class="step_content">{{step.content}}</p>
+                                	<a data-ng-if="step.type == 'image'" target="_blank" href="{{step.content}}">
+                                		<img style="margin-left: 10px;margin-top: 5px;" width="25%" src="{{step.content}}" />
+                                	</a>
+                                	<a data-ng-if="step.type == 'doc'" target="_blank" href="{{step.content}}">
+                                		<img style="margin-left: 10px;margin-top: 5px;" width="10%" src="{{step.icon}}" />
+                                		<div><p>{{step.title}}</p></div>
+                                	</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <!-- Mobile -->
+                    <ul class="chat visible-xs">
+                        <li data-ng-class="{'left clearfix': !message.isUser, 'right clearfix': message.isUser}" data-ng-repeat="message in messages">
+                            <span data-ng-class="{'chat-img pull-left': !message.isUser, 'chat-img pull-right': message.isUser}">
+                                <img data-ng-if="message.isUser" src="/images/generic-user-icon.png" class="img-circle namiContainer-xs" />
+                                <img data-ng-if="!message.isUser" src="/images/logo.png" class="img-circle namiContainer-xs" />
+                            </span>
+                            <div class="chat-body-xs clearfix">
+                                <div class="header" data-ng-class="{'header_bottom': message.isUser}">
+                                    <strong data-ng-class="{'pull-right': message.isUser}" class="message_header-xs">{{message.author}}</strong>
+                                    <small data-ng-class="{'pull-right': !message.isUser}" class="text-muted small-xs">
+                                        <span class="glyphicon glyphicon-time"></span>{{message.hourAnswerFilter}}</small>
+                                </div>
+                                <p data-ng-if="!message.isURL" class="message_content-xs" data-ng-class="{'pull-right': message.isUser}">{{message.message}}</p>
+                                
+                                <div data-ng-if="$parent.$last" data-ng-repeat="topic in message.topics" data-ng-class="{'pull-right': message.isUser}" style="margin-left: 20px;">
+                                    <p class="topic_content-xs" data-ng-click="sendTopicMessage(topic)"><i class="fa fa-comment"></i> {{topic}}</p>
+                                </div>
+                                
+                                <div data-ng-repeat="step in message.stepsToSolve" data-ng-class="{'pull-right': message.isUser}" style="margin-left: 20px;">
+									<p data-ng-if="step.type == 'string'" class="step_content-xs">{{step.content}}</p>
+                                	<a data-ng-if="step.type == 'image'" target="_blank" href="{{step.content}}">
+                                		<img width="100px" style="margin-left: 5px;margin-bottom: 15px;" src="{{step.content}}" />
+                                	</a>
+                                	<a data-ng-if="step.type == 'doc'" target="_blank" href="{{step.content}}">
+                                		<img style="margin-left: 10px;margin-top: 5px;" width="30%" src="{{step.icon}}" />
+                                		<div><p>{{step.title}}</p></div>
+                                	</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="panel-footer" style="padding-left: 0%; padding-right: 0%">
+                    <div class="col-sm-12 input-group input-group-sm" style="padding-left:15px; padding-right: 0px">
+                            <input id="btn-input" type="text" class="form-control" data-ng-model="userMessage.text" placeholder="Utile termos como modelo ou código do alerta..." />
+                            
+                            <!-- Tablet, Laptop, Desktop -->
+                            <span class="input-group-btn hidden-xs" style="padding-left: 15px; padding-right: 15px">
+                                <button class="btn btn-success btn-sm buttonContainer" ng-disabled="emptyMessage()" id="btn-chat" data-ng-click="sendMessage()">Enviar</button>
+                            </span>
+                            
+                            <!-- Mobile -->
+                            <span class="input-group-btn hidden-sm hidden-md hidden-lg" style="padding-right: 15px">
+                                <button class="btn btn-success btn-sm buttonContainer" ng-disabled="emptyMessage()" id="btn-chat" data-ng-click="sendMessage()"><i class="fa fa-send"></i></button>
+                            </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tablet, Laptop, Desktop -->
+            <footer class="main-footer visible-sm visible-md visible-lg" style="padding-top: 16px">
+                <div class="container" style="font-size: 16; text-align: center">
+                    <strong>Powered by <span class="blue_OneForce">Hop</span></strong>
+                </div>
 
-  <head>
-    <title>NodeJS Starter Application</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="stylesheets/style.css">
-  </head>
+                    <button ng-click="startRecording()" type="button">
+                        Start Record
+                    </button>
+                    <button ng-click="stopRecording()" type="button">
+                        Stop Record
+                    </button>
+                    <h2>Recordings</h2>
+                    <ul id="recordingslist"></ul>
 
-  <body>
-    <table>
-      <tr>
-        <td style= "width:30%;">
-          <img class = "newappIcon" src="images/newapp-icon.png">
-        </td>
-        <td>
-          <h1 id="message">Hello World!</h1>
-          <p class='description'></p> Thanks for creating a <span class = "blue">NodeJS Starter Application</span>.
-        </td>
-      </tr>
-    </table>
-  </body>
-
+                    <div ng-if="!recorder">
+                        Message for users when recording is not possible.
+                    </div>
+                    <!-- End controls-->
+                </ng-audio-recorder>
+            </footer>
+            
+            <!-- Mobile -->
+            <footer class="main-footer visible-xs">
+                <div class="container" style="font-size: 12; text-align: center;">
+                    <strong>Powered by <span class="blue_OneForce">Hop</span></strong>
+                </div>
+            </footer>
+        </div>
+    </body>
 </html>

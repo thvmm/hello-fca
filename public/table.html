@@ -1,0 +1,106 @@
+<head>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="stylesheets/style.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<title>Teste de Busca Inteligente</title>
+
+</head>
+
+<h3 style="padding-left:20%" >  TESTE DE BUSCA INTELIGENTE </h3>
+
+<form  ng-app="myApp" ng-controller="customersCtrl" class="panel panel-primary panel-title">
+
+<div class="col-sm-6">
+
+<div class="form-group col-sm-8 pull-left" style="padding-top:20px; padding-left:50px ">
+    <input type="text" class="search form-control" placeholder="Digite p nome de um produto" ng-model="query">
+</div>
+
+<div class="col-sm-2" style="padding-top:20px">
+	<button type="submit" class="btn btn-primary" ng-click="searchByQuery()" >Enviar </button>
+</div>
+
+</div>
+<span class="counter pull-right"></span>
+<table class="table table-hover table-bordered results table-striped">
+
+  <thead class="">
+    <tr>
+      <th class="col-md-2 col-xs-2 ">Nome</th>
+      <th class="col-md-5 col-xs-2">Descrição</th>
+      <th class="col-md-2 col-xs-2">Genêro</th>
+      <th class="col-md-2 col-xs-2">Cor</th>
+      <th class="col-md-1 col-xs-2">link</th>
+    </tr>
+    <tr class="warning no-result">
+      <td colspan="4"><i class="fa fa-warning"></i> No result</td>
+    </tr>
+  </thead>
+  
+  <tbody>
+		  <tr ng-repeat="x in names" ng-if="!(x._id == '_design/7dcef2409b359d5a31c3c17a0c556f038e1aaf48') && x._id">
+		    <td>{{ x.nome }}</td>
+		    <td>{{ x.desc }}</td>
+		    <td>{{ x.genero}}</td>
+		    <td>{{x.cor}}</td>
+		    <td><a class="glyphicon glyphicon-globe" href="{{x.url}} " target="_blank"></a></td>
+		  </tr>
+  </tbody>
+  
+</table>
+
+
+</form>
+
+<script>
+
+var app = angular.module('myApp', []);
+app.controller('customersCtrl', function($scope, $http) {
+	
+    $http.get("http://job.apital.com.br/api/v1/search/allproduct")
+    .then(function (response) {
+    	console.log(response)
+    	$scope.names = response.data;
+    	console.log($scope.names);
+    	});
+	
+	if (!$scope.query){
+		$scope.query = "";    
+	}
+    $scope.searchByQuery = function(){
+    	var query = $scope.query; 
+    	if (query.length > 0 ){
+    	
+    	console.log($scope.query)
+    	$http.get("http://job.apital.com.br/api/v1/search/product?q="+query+"")
+        .then(function (response) {
+        	$scope.names = [];
+        	$scope.names[0] = response.data;
+        	console.log($scope.names);
+        	if ($scope.names.length == 1 && $scope.names == ""){
+        		alert("esse produto não consta nesse banco de dados");
+        	}
+        	});
+    	}
+    	else {
+    	    $http.get("http://job.apital.com.br/api/v1/search/allproduct")
+    	    .then(function (response) {
+    	    	$scope.names = response.data;
+    	    	console.log($scope.names);
+    	    	});
+    	}
+    }
+});
+
+</script>

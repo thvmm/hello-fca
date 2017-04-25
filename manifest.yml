@@ -1,8 +1,11 @@
 applications:
 - path: .
-  memory: 256M
+  memory: 64M
   instances: 1
   domain: mybluemix.net
   name: hello-fca
   host: hello-fca
   disk_quota: 1024M
+  services:
+  - FCA Conversation
+  - database
