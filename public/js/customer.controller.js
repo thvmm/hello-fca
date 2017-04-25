@@ -35,6 +35,23 @@ angular.module('myApp', ['angularAudioRecorder']).controller('customerController
         $scope.recorder.exportWAV(function (blob) {
             console.log(blob);
 
+            var fd = new FormData();
+            fd.append('upl', blob, 'audio.wav');
+            var config = { headers: { 'Content-Type': undefined } };
+            var fd = new FormData();
+            fd.append('fname', 'test.wav');
+            fd.append('upl', blob);
+            $.ajax({
+                type: 'POST',
+                url: '/api/stt',
+                data: fd,
+                processData: false,
+                contentType: false
+            }).done(function(data) {
+                console.log(data);
+            });
+
+
             var url = URL.createObjectURL(blob);
             var li = document.createElement('li');
             var au = document.createElement('audio');

@@ -12,7 +12,8 @@
 		"body-parser": "1.15.2",
 		"cloudant": "*",
 		"async": "*",
-		"nano":"*"
+		"nano":"*",
+		"multer": "*"
 	},
 	"repository": {},
 	"engines": {
