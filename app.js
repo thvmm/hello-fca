@@ -14,25 +14,9 @@ var cfenv = require('cfenv');
 
 var bodyParser = require('body-parser');
 
-var watson = require('watson-developer-cloud');
-var Cloudant = require('cloudant');
 var vcap = JSON.parse(process.env.VCAP_SERVICES);
-var cloudant = Cloudant({vcapServices: vcap});
-
-cloudant.db.list(function(err, allDbs) {
-  console.log('All my databases: %s', allDbs.join(', '))
-});
 
 var fs = require('fs');
-var watsonCredentials = vcap.conversation[0].credentials;
-
-var conversation = watson.conversation({
-  username: watsonCredentials.username,
-  password: watsonCredentials.password,
-  version: 'v1',
-  version_date: '2016-09-20'
-});
-
 
 // create a new express server
 var app = express();
@@ -55,24 +39,6 @@ var appEnv = cfenv.getAppEnv();
 
 app.post('/chat', function(req, res) {
 
-	var msg = {};
-	if(req.body) {
-		msg = req.body;
-	}
-
-	msg.workspace_id = '6d255038-3089-4195-994f-2e0c1389388f';
-	
-	console.log(JSON.stringify(msg, null, 2));
-	
-	conversation.message(msg, function(err, response) {
-	  if (err) {
-	    console.log('error:', err);
-	    res.send(err);
-	  } else {
-	    console.log(JSON.stringify(response, null, 2));
-	    res.send(response);
-      }
-	});
 });
 
 // start server on the specified port and binding host
